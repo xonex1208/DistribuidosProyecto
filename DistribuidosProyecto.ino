@@ -1,19 +1,20 @@
 #include <OLED_I2C.h>
-#define MAXBALAS 5
-#define VELBALAS 5
-#define RECARGA 8
-#define MAXENEMIGOS 10
-#define VELENEMIGOS 1
-#define SEPENEMIGOS 20
-#define PLAYER 1
-#define ENEMIGO 2
-#define BALA 3
+#define MAXBALAS 5//Maximo numero de balas al mismo tiempo
+#define VELBALAS 5//Velocidad delas valas
+#define RECARGA 8//Tiempo que toma la nave para lanzar la siguiente bala
+#define MAXENEMIGOS 10//Maximo numero de enemigos al mismo tiempo
+#define VELENEMIGOS 1//Velocidad de los enemigos
+#define SEPENEMIGOS 20//Tiempo que pasa entre la generacion de un nuevo enemigo
+//tipos de sprites
+#define PLAYER 1//Jugador
+#define ENEMIGO 2//Enemigo
+#define BALA 3//balla
 
-OLED  myOLED(SDA, SCL);
+OLED  myOLED(SDA, SCL);//Se instancia la clase OLED que controla la pantalla
 
-extern const uint8_t TinyFont[];
+extern const uint8_t TinyFont[];//Fuente para escribir texto y numeros
 
-const uint8_t foto[] PROGMEM={
+const uint8_t foto[] PROGMEM={//128x64
 0x55, 0x22, 0x55, 0xEF, 0x55, 0xAA, 0x55, 0xFF, 0x57, 0xBF, 0x55, 0xFF, 0x55, 0xBA, 0xFF, 0xFF,   // 0x0010 (16) pixels
 0xFF, 0xFF, 0xFF, 0xFF, 0x77, 0xFF, 0x55, 0xFF, 0x55, 0xBB, 0x55, 0xEF, 0x55, 0xBB, 0x55, 0xFE,   // 0x0020 (32) pixels
 0x55, 0xBB, 0x55, 0xEE, 0x55, 0xBB, 0x55, 0x3E, 0x15, 0x0B, 0x15, 0x0F, 0x15, 0x03, 0x05, 0x0F,   // 0x0030 (48) pixels
@@ -80,7 +81,7 @@ const uint8_t foto[] PROGMEM={
 0x15, 0x0A, 0x05, 0x00, 0x11, 0x01, 0x45, 0x02, 0x15, 0x03, 0x05, 0x03, 0x15, 0x03, 0x05, 0x0E,   // 0x0400 (1024) pixels
 };
 
-const uint8_t acerca[] PROGMEM = {
+const uint8_t acerca[] PROGMEM = {//128x64
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,   // 0x0010 (16) pixels
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,   // 0x0020 (32) pixels
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,   // 0x0030 (48) pixels
@@ -247,10 +248,10 @@ const uint8_t bala[] PROGMEM={//8x8
 
 //bool drawCollisionableBitmap(int,int,uint8_t*,int,int);
 
-struct Sprite{
-    byte posx,posy;
-    byte type;
-    void draw(){
+struct Sprite{//Se crea un dato de tipo sprite por cada jugador, enemigo, bala, etc que requiera moverse
+    byte posx,posy;//Posicion del sprite
+    byte type;//Tipo de sprite (Estan definidos arriba)
+    void draw(){//Dibuja el sprite
         switch(type){
             case ENEMIGO:
                 myOLED.drawBitmap(posx,posy,(uint8_t*)enemigo01,16,8);
@@ -280,41 +281,41 @@ struct Sprite{
 //    }
 };
 
-int readJoystick(byte,int,int);
-void barraDeCarga();
-void draw();
-void moverplayer();
-void disparar();
-void ordenarSpritesDesc(Sprite[],byte);
-void ordenarSpritesAsc(Sprite[],byte);
-void avanceEnemigo();
+int readJoystick(byte,int,int);//Convierte los valores del joystick a valores que se suman a las cordenadas
+void barraDeCarga();//Muestra una barra de carga
+void draw();//actualiza los elementos en la pantalla
+void moverplayer();//Cambia la posicion del jugador de acuerdo al joystick
+void disparar();//Dispara y realiza el avance de las balas
+void ordenarSpritesDesc(Sprite[],byte);//Ordena de forma desendente un arreglo de sprites
+void ordenarSpritesAsc(Sprite[],byte);//Ordena de forma asendente un arreglo de sprites
+void avanceEnemigo();//Crear y avanza enemigos
 
 
-byte x[5],y[5],con=254;
-Sprite playerP;
-Sprite balas[MAXBALAS];
-Sprite enemigos[MAXENEMIGOS];
-unsigned long time=0;
-float promedio=0;
-byte nbalas=0;
-byte nEnemigos=0;
-byte recargabalas=0;
-byte genenemigos=0;
+byte x[5],y[5],con=254;//Posicion de las estrellas(En desuso)
+Sprite playerP;//Sprite del jugador
+Sprite balas[MAXBALAS];//sprites de las balas
+Sprite enemigos[MAXENEMIGOS];//sprites de los enemigos
+byte nbalas=0;//numero de balas actualmente
+byte nEnemigos=0;//numero de enemigos actualmente
+byte recargabalas=0;//Controla que las balas se disparen cada determinado tiempo
+byte genenemigos=0;//Controla que los enemigos se generen cada determinado tiempo
 
 void setup()
 {
     if(!myOLED.begin(SSD1306_128X64))
-        while(1);   // In case the library failed to allocate enough RAM for the display buffer...
-    myOLED.setBrightness(50);
-    myOLED.rotateDisplay(false);
+        while(1);   // En caso de que la libreria falle por falta de memoria se congela el programa
+    myOLED.setBrightness(50);//Ajusta el brillo de la pantalla
+    myOLED.rotateDisplay(false);//Cambia la orientacion de la pantalla Invertida/Normal
+    //Dibuja la portada del juego en buffer
     myOLED.drawBitmap(0,0,(uint8_t*)portada,128,64);
     myOLED.update();
+    //Se crea semilla aleatoria
     pinMode(A3,INPUT);
     srandom(analogRead(A3));
-    delay(2000);
+    delay(2000);//Espera 2 segundos
     //barraDeCarga();
-    time=millis();
-    myOLED.setFont((uint8_t*)TinyFont);
+    myOLED.setFont((uint8_t*)TinyFont);//cambia la fuente de texto
+    //Inicializa el sprite del jugador
     playerP.posx=8;
     playerP.posy=28;
     playerP.type=PLAYER;
@@ -322,21 +323,23 @@ void setup()
 
 void loop()
 {
-    draw();
+    draw();//Actualizar elementos de la pantalla
 }
 
 void draw(){
-    myOLED.clrScr();
-    myOLED.drawBitmap(0,0,(uint8_t*)tierra,8,64);
-    disparar();
-    moverplayer();
-    avanceEnemigo();
-    myOLED.update();
+    myOLED.clrScr();//Limpiar pantalla
+    myOLED.drawBitmap(0,0,(uint8_t*)tierra,8,64);//dibujar tierra en el lado izquierdo
+    disparar();//Avanzar disparos
+    moverplayer();//Mover jugador
+    avanceEnemigo();//Avanzar enemigos
+    myOLED.update();//Dibujar en pantalla
 }
 
 void moverplayer(){
+    //Se escucha al joystick
     playerP.posx-=readJoystick(A1,5,0);
     playerP.posy+=readJoystick(A2,5,0);
+    //Se controla que el jugador no se salga de la pantalla
     if(playerP.posx<8){
         playerP.posx=8;
     }else if(playerP.posx>127-16){
@@ -347,32 +350,34 @@ void moverplayer(){
     }else if(playerP.posy>63-8){
         playerP.posy=63-8;
     }
-    playerP.draw();
-    myOLED.drawBitmap(0,playerP.posy,(uint8_t*)flecha,8,8);
-    myOLED.drawBitmap(playerP.posx+4,0,(uint8_t*)flecha2,8,4);
+    playerP.draw();// Se dibuja al jugadro
+    myOLED.drawBitmap(0,playerP.posy,(uint8_t*)flecha,8,8);//Se dibuja la flecha de la izquierda
+    myOLED.drawBitmap(playerP.posx+4,0,(uint8_t*)flecha2,8,4);//Se dibuja la flecha de arriba
 }
 
-int readJoystick(byte pin,int maxval,int deadzone){
-    int tem=analogRead(pin);
-    if(tem>443+deadzone){
+int readJoystick(byte pin,int maxval,int deadzone){//pin= pin del joystick a leer, maxval=Maximo valor que tomara el joystick, deadzone=zona muerta(zona del medio donde el joystick no responde)
+    int tem=analogRead(pin);//Se lee el pin del eje del joystick a convertir
+    if(tem>443+deadzone){//Si el joystick se inclina hacia un lado en ese eje
         tem-=443+deadzone;
         tem*=maxval/(443.0-deadzone);
-    }else if(tem<443-deadzone){
+    }else if(tem<443-deadzone){//Si el joystick se inclina hacia el otro lado
         tem=maxval/(443.0-deadzone)*((443.0-deadzone)-tem);
         tem*=-1;
-    }else{
+    }else{//Si el joystick no esta inclinado
         tem=0;
     }
     return tem;
 }
 
 void barraDeCarga(){
-    uint8_t barra[]={0x7E};
-    uint8_t fondoBarra[]={0x81};
+    uint8_t barra[]={0x7E};//fondo de la barra
+    uint8_t fondoBarra[]={0x81};//relleno de la barra
+    //se dibuja el fondo de la barra
     for(int i=0;i<128;i++){
         myOLED.drawBitmap(i,55,fondoBarra,1,8);
     }
     myOLED.update();
+    //Se rellena la barra lentamente
     for(int i=0;i<128;i+=2){
         myOLED.drawBitmap(i,55,barra,1,8);
         myOLED.update();
@@ -380,37 +385,34 @@ void barraDeCarga(){
     }
 }
 void disparar(){
-    bool disp=false;
-    bool b=digitalRead(A0);
-    byte ibalas;
+    bool b=digitalRead(A0);//lee el boton del joystick(y el otro boton si lo tienen XD)
+    //Se genera una bala si se presiona el boton, hay menos balas que el limite de balas y el tiempo de recarga es cero
     if(!b&&nbalas<MAXBALAS&&recargabalas==0){
-        if(nbalas==0){
-            ibalas=0;
-        }else{
-            ibalas=nbalas;
-        }
-        balas[ibalas].posx=playerP.posx+16;
-        balas[ibalas].posy=playerP.posy;
-        balas[ibalas].type=BALA;
-        nbalas++;
-        ordenarSpritesAsc(balas,nbalas);
-        recargabalas=RECARGA;
+        byte i=nbalas;//Se ubica en la posicion del arreglo donde se creara la proxima bala
+        //Se inicializa bala delante del jugador
+        balas[i].posx=playerP.posx+16;
+        balas[i].posy=playerP.posy;
+        balas[i].type=BALA;
+        nbalas++;//Se incrementa el numero de balas
+        ordenarSpritesAsc(balas,nbalas);//Se ordenan las balas para su facil eliminacion
+        recargabalas=RECARGA;//Se reinicia el tiempo para el proximo disparo
     }
-    byte nb=nbalas;
-    for(int i=nb;i>0;i--){
-        balas[i-1].posx+=VELBALAS;
-        if(balas[i-1].posx>127){
+    byte nb=nbalas;//variable temporal que contiene el numero de balas
+    for(int i=nb;i>0;i--){//se recorren las balas una por una
+        balas[i-1].posx+=VELBALAS;//Se avanza la bala
+        if(balas[i-1].posx>127){//Si la bala esta fuera de la pantalla se elimina
             nbalas--;
-        }else{
+        }else{//Sino se dibuja
             balas[i-1].draw();
         }
     }
-    if(recargabalas>0){
+    if(recargabalas>0){//Si aun falta para el proximo disparo se reduce el tiempo
         recargabalas--;
     }
 }
 
-void ordenarSpritesDesc(Sprite arr[],byte cont){
+//Ordena los sprites por su posicion en x de forma desendente mediante metodo de burbuja
+void ordenarSpritesDesc(Sprite arr[],byte cont){//arr= arreglo de sprites a ordenar, cont= cantidad de sprites en el arreglo
     Sprite tem;
     for(int i=0;i<cont-1;i++){
         for(int j=0;j<cont-i-1;j++){
@@ -422,8 +424,8 @@ void ordenarSpritesDesc(Sprite arr[],byte cont){
         }
     }
 }
-
-void ordenarSpritesAsc(Sprite arr[],byte cont){
+//Ordena los sprites por su posicion en x de forma asendente mediante metodo de burbuja
+void ordenarSpritesAsc(Sprite arr[],byte cont){//arr= arreglo de sprites a ordenar, cont= cantidad de sprites en el arreglo
     Sprite tem;
     for(int i=0;i<cont-1;i++){
         for(int j=0;j<cont-i-1;j++){
@@ -437,20 +439,22 @@ void ordenarSpritesAsc(Sprite arr[],byte cont){
 }
 
 void avanceEnemigo(){
+    //Si no se ha superado el numero maximo de enemigos y el tiempo de generacion es cero se crea otro enemigo
     if(nEnemigos<MAXENEMIGOS && genenemigos==0){
-        byte i=nEnemigos;
+        byte i=nEnemigos;//Se ubica en la posicion del arreglo donde se creara el proximo enemigo
+        //Se genera el enemigo en una posicion aleatoria en el borde derecho
         enemigos[i].posy=random(0,64-8);
         enemigos[i].posx=127;
         enemigos[i].type=ENEMIGO;
-        nEnemigos++;
-        genenemigos=SEPENEMIGOS;
-        ordenarSpritesDesc(enemigos,nEnemigos);
+        nEnemigos++;//Se incrementa el numero de enemigos
+        genenemigos=SEPENEMIGOS;//Se reinicia el tiempo para generar el proximo enemigo
+        ordenarSpritesDesc(enemigos,nEnemigos);//Se ordenan los enemigos para una facil eliminacion
     }
-    for(int i=nEnemigos;i>0;i--){
-        enemigos[i-1].posx-=VELENEMIGOS;
-        if(enemigos[i-1].posx>200&&enemigos[i-1].posx<255){
+    for(int i=nEnemigos;i>0;i--){//Se recorren todos los enemigos
+        enemigos[i-1].posx-=VELENEMIGOS;//Se avanza el enemigo
+        if(enemigos[i-1].posx>200&&enemigos[i-1].posx<255){//Si el enemigo se sale de la pantalla se elimina
             nEnemigos--;
-        }else{
+        }else{//Sino se dibuja
 //            if(enemigos[i-1].drawCollisionable()){
 //                int xi=enemigos[i-1].posx;
 //                int yi=enemigos[i-1].posy;
@@ -459,6 +463,7 @@ void avanceEnemigo(){
             enemigos[i-1].draw();
         }
     }
+    //Si queda tiempo para la generacion dek proximo enemigo se reduce
     if(genenemigos>0){
         genenemigos--;
     }
