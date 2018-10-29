@@ -263,11 +263,13 @@ bool drawCollisionableBitmap(int,int,uint8_t*,int,int);//Dibuja un objeto y dice
 
 struct Sprite{//Se crea un dato de tipo sprite por cada jugador, enemigo, bala, etc que requiera moverse
     byte posx,posy;//Posicion del sprite
+    byte posory;//Posicion de origen
     byte alto,ancho;//Tamaño de la imagen
     const uint8_t *imagen;
     const uint8_t *imagen2;
     byte type;//Tipo de sprite (Estan definidos arriba)
     void setType(byte t){
+        type=t;
         switch(t){
             case ENEMIGO:
                 imagen=enemigo01;
@@ -286,6 +288,10 @@ struct Sprite{//Se crea un dato de tipo sprite por cada jugador, enemigo, bala, 
                 alto=8;
         }
     }
+    void setPosicion(byte px,byte py){
+        posx=px;
+        posy=posory=py;
+    }
     bool draw(byte variante){//Dibuja el sprite
         if(variante==0)
             return drawCollisionableBitmap(posx,posy,(uint8_t*)imagen,ancho,alto);
@@ -301,7 +307,6 @@ struct Sprite{//Se crea un dato de tipo sprite por cada jugador, enemigo, bala, 
     }
 
     bool isNearOf(const Sprite &p){
-        if()
         return p.posx>(int)posx-p.ancho && p.posx<(int)posx+p.ancho+ancho && p.posy>(int)posy-p.alto && p.posy<(int)posy+p.alto+alto;
     }
 
@@ -310,6 +315,16 @@ struct Sprite{//Se crea un dato de tipo sprite por cada jugador, enemigo, bala, 
     }
     bool operator <(const Sprite &p){
         return posx==p.posx?posy<p.posy:posx<p.posx;
+    }
+    bool operator +=(const byte v){
+        posx+=v;
+    }
+    bool operator -=(const byte v){
+        posx-=v;
+        if(type==ENEMIGO){
+            byte mod=32;
+            posy=posory+(posx%mod>mod/2?map(posx%mod,mod-1,mod/2,0,8):map(posx%mod,mod/2,0,8,0));
+        }
     }
 };
 
@@ -453,7 +468,7 @@ void disparar(){
     }
     byte nb=nbalas;//variable temporal que contiene el numero de balas
     for(int i=nb;i>0;i--){//se recorren las balas una por una
-        balas[i-1].posx+=VELBALAS;//Se avanza la bala
+        balas[i-1]+=VELBALAS;//Se avanza la bala
         if(balas[i-1].posx>127){//Si la bala esta fuera de la pantalla se elimina
             nbalas--;
         }else{//Sino se dibuja
@@ -497,27 +512,25 @@ void avanceEnemigo(){
     if(nEnemigos<MAXENEMIGOS && genenemigos==0){
         byte i=nEnemigos;//Se ubica en la posicion del arreglo donde se creara el proximo enemigo
         //Se genera el enemigo en una posicion aleatoria en el borde derecho
-        enemigos[i].posy=random(6,64-16);
-        enemigos[i].posx=127;
+        enemigos[i].setPosicion(127,random(6,64-16));
+        //enemigos[i].posy=random(6,64-16);
+        //enemigos[i].posx=127;
         enemigos[i].setType(ENEMIGO);
         nEnemigos++;//Se incrementa el numero de enemigos
         genenemigos=SEPENEMIGOS;//Se reinicia el tiempo para generar el proximo enemigo
         ordenarSpritesDesc(enemigos,nEnemigos);//Se ordenan los enemigos para una facil eliminacion
     }
     for(int i=nEnemigos;i>0;i--){//Se recorren todos los enemigos
-        enemigos[i-1].posx-=VELENEMIGOS;//Se avanza el enemigo
+        enemigos[i-1]-=VELENEMIGOS;//Se avanza el enemigo
         if(enemigos[i-1].posx>200&&enemigos[i-1].posx<255){//Si el enemigo se sale de la pantalla se elimina
             nEnemigos--;
         }else{//Sino se dibuja
             int xi=enemigos[i-1].posx;
             //int yi=enemigos[i-1].posy;
-            byte mod=32;
-            int yi=enemigos[i-1].posy+(xi%mod>mod/2?map(xi%mod,mod-1,mod/2,0,8):map(xi%mod,mod/2,0,8,0));
-            bool colision=false;
-            if(xi%8>3)
-                colision=drawCollisionableBitmap(xi,yi,(uint8_t*)enemigo01,16,8);
-            else
-                colision=drawCollisionableBitmap(xi,yi,(uint8_t*)enemigo02,16,8);
+            //byte mod=32;
+            //int yi=enemigos[i-1].posy+(xi%mod>mod/2?map(xi%mod,mod-1,mod/2,0,8):map(xi%mod,mod/2,0,8,0));
+            //enemigos[i-1]-=VELENEMIGOS;
+            bool colision=enemigos[i-1].draw(xi%4>1);
             if(colision){
                 //myOLED.drawRect(xi,yi,xi+16,yi+8);
                 enemigos[i-1].drawRect();
