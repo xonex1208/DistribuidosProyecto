@@ -331,7 +331,7 @@ struct Sprite{//Se crea un dato de tipo sprite por cada jugador, enemigo, bala, 
 
 int readJoystick(byte,int,int);//Convierte los valores del joystick a valores que se suman a las cordenadas
 void barraDeCarga();//Muestra una barra de carga
-void barraDeEstado(byte);
+void barraDeEstado();//Dibuja la barra de estado
 void draw();//actualiza los elementos en la pantalla
 void moverplayer();//Cambia la posicion del jugador de acuerdo al joystick
 void disparar();//Dispara y realiza el avance de las balas
@@ -351,6 +351,7 @@ byte genenemigos=0;//Controla que los enemigos se generen cada determinado tiemp
 byte inmunidad=0;//inmunidad del jugador
 byte nvidas=3;
 int npuntos=0;
+unsigned long time=0;
 
 void setup()
 {
@@ -371,6 +372,7 @@ void setup()
     //barraDeCarga();
     myOLED.setFont((uint8_t*)TinyFont);//cambia la fuente de texto
     playerP.ini(PLAYER,8,28);//Inicializa el sprite del jugador
+    time=millis();
 }
 
 void loop()
@@ -398,7 +400,9 @@ void draw(){
     avanceEnemigo();//Avanzar enemigos
     //myOLED.drawHLine(0,5,128);
     drawCollisionableBitmap(0,6,(uint8_t*)tierra,8,58);//dibujar tierra en el lado izquierdo
-    barraDeEstado(nvidas);
+    barraDeEstado();
+    myOLED.printNumI(millis()-time,80,0);
+    time=millis();
     myOLED.update();//Dibujar en pantalla
 }
 
@@ -451,16 +455,17 @@ void barraDeCarga(){
         delay(20);
     }
 }
-void barraDeEstado(byte vida){
+void barraDeEstado(){
     if(inmunidad!=0){
         byte i=map(inmunidad,0,INMUNIDAD,0,127);
         uint8_t relleno[]={0xFF};
         for(;i>0;i--){
-            myOLED.drawBitmap(i,0,relleno,1,6);
+            //myOLED.drawBitmap(i,0,relleno,1,6);
+            myOLED.drawVLine(i,0,6);
         }
         inmunidad--;
     }else{
-        for(int i=0;i<vida&&i<5;i++){
+        for(int i=0;i<nvidas&&i<5;i++){
             myOLED.drawBitmap((i*8),0,(uint8_t*)corazon,8,6);
         }
         myOLED.print("LV:",28,0);
@@ -469,7 +474,6 @@ void barraDeEstado(byte vida){
         myOLED.printNumI(nEnemigos,56,0);
         myOLED.print("B:",64,0);
         myOLED.printNumI(nbalas,72,0);
-        myOLED.printNumI(inmunidad,80,0);
         myOLED.printNumI(playerP.posx,103,0);
         myOLED.print(",",115,0);
         myOLED.printNumI(playerP.posy,119,0);
