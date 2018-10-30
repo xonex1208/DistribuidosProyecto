@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1540520664 source:c:\users\masdz\documents\github\distribuidosproyecto\distribuidosproyecto.ino
+1540847430 source:c:\users\masdz\documents\github\distribuidosproyecto\distribuidosproyecto.ino
 	<OLED_I2C.h>
 
-1540253297 c:\program files (x86)\codeblocks\arduino\libraries\oled_i2c\oled_i2c.h
+1540249697 c:\program files (x86)\codeblocks\arduino\libraries\oled_i2c\oled_i2c.h
 	"Arduino.h"
 	"hardware/avr/HW_AVR_defines.h"
 	"WProgram.h"
@@ -10,7 +10,7 @@
 	"Arduino.h"
 	"hardware/arm/HW_ARM_defines.h"
 
-1539749357 c:\program files (x86)\codeblocks\arduino\hardware\arduino\cores\arduino\arduino.h
+1539745757 c:\program files (x86)\codeblocks\arduino\hardware\arduino\cores\arduino\arduino.h
 	<stdlib.h>
 	<string.h>
 	<math.h>
@@ -23,46 +23,46 @@
 	"HardwareSerial.h"
 	"pins_arduino.h"
 
-1362990550 c:\program files (x86)\codeblocks\arduino\hardware\arduino\cores\arduino\binary.h
+1362986950 c:\program files (x86)\codeblocks\arduino\hardware\arduino\cores\arduino\binary.h
 
-1362990550 c:\program files (x86)\codeblocks\arduino\hardware\arduino\cores\arduino\wcharacter.h
+1362986950 c:\program files (x86)\codeblocks\arduino\hardware\arduino\cores\arduino\wcharacter.h
 	<ctype.h>
 
-1371036734 c:\program files (x86)\codeblocks\arduino\hardware\arduino\cores\arduino\wstring.h
+1371033134 c:\program files (x86)\codeblocks\arduino\hardware\arduino\cores\arduino\wstring.h
 	<stdlib.h>
 	<string.h>
 	<ctype.h>
 	<avr/pgmspace.h>
 
-1362990550 c:\program files (x86)\codeblocks\arduino\hardware\arduino\cores\arduino\hardwareserial.h
+1362986950 c:\program files (x86)\codeblocks\arduino\hardware\arduino\cores\arduino\hardwareserial.h
 	<inttypes.h>
 	"Stream.h"
 	"USBAPI.h"
 
-1371036430 c:\program files (x86)\codeblocks\arduino\hardware\arduino\cores\arduino\stream.h
+1371032830 c:\program files (x86)\codeblocks\arduino\hardware\arduino\cores\arduino\stream.h
 	<inttypes.h>
 	"Print.h"
 
-1362990550 c:\program files (x86)\codeblocks\arduino\hardware\arduino\cores\arduino\print.h
+1362986950 c:\program files (x86)\codeblocks\arduino\hardware\arduino\cores\arduino\print.h
 	<inttypes.h>
 	<stdio.h>
 	"WString.h"
 	"Printable.h"
 
-1362990550 c:\program files (x86)\codeblocks\arduino\hardware\arduino\cores\arduino\printable.h
+1362986950 c:\program files (x86)\codeblocks\arduino\hardware\arduino\cores\arduino\printable.h
 	<new.h>
 
-1362990550 c:\program files (x86)\codeblocks\arduino\hardware\arduino\cores\arduino\new.h
+1362986950 c:\program files (x86)\codeblocks\arduino\hardware\arduino\cores\arduino\new.h
 	<stdlib.h>
 
-1362990550 c:\program files (x86)\codeblocks\arduino\hardware\arduino\cores\arduino\usbapi.h
+1362986950 c:\program files (x86)\codeblocks\arduino\hardware\arduino\cores\arduino\usbapi.h
 
-1362990550 c:\program files (x86)\codeblocks\arduino\hardware\arduino\variants\standard\pins_arduino.h
+1362986950 c:\program files (x86)\codeblocks\arduino\hardware\arduino\variants\standard\pins_arduino.h
 	<avr/pgmspace.h>
 
-1416637192 c:\program files (x86)\codeblocks\arduino\libraries\oled_i2c\hardware\avr\hw_avr_defines.h
+1416633592 c:\program files (x86)\codeblocks\arduino\libraries\oled_i2c\hardware\avr\hw_avr_defines.h
 
-1417068736 c:\program files (x86)\codeblocks\arduino\libraries\oled_i2c\hardware\pic32\hw_pic32_defines.h
+1417065136 c:\program files (x86)\codeblocks\arduino\libraries\oled_i2c\hardware\pic32\hw_pic32_defines.h
 
-1416768198 c:\program files (x86)\codeblocks\arduino\libraries\oled_i2c\hardware\arm\hw_arm_defines.h
+1416764598 c:\program files (x86)\codeblocks\arduino\libraries\oled_i2c\hardware\arm\hw_arm_defines.h
 
