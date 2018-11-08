@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1540847430 source:c:\users\masdz\documents\github\distribuidosproyecto\distribuidosproyecto.ino
+1541648240 source:c:\users\masdz\documents\github\distribuidosproyecto\distribuidosproyecto.ino
 	<OLED_I2C.h>
 
 1540249697 c:\program files (x86)\codeblocks\arduino\libraries\oled_i2c\oled_i2c.h
@@ -56,6 +56,9 @@
 	<stdlib.h>
 
 1362986950 c:\program files (x86)\codeblocks\arduino\hardware\arduino\cores\arduino\usbapi.h
+
+1362986950 c:\program files (x86)\codeblocks\arduino\hardware\arduino\variants\eightanaloginputs\pins_arduino.h
+	"../standard/pins_arduino.h"
 
 1362986950 c:\program files (x86)\codeblocks\arduino\hardware\arduino\variants\standard\pins_arduino.h
 	<avr/pgmspace.h>
