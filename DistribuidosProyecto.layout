@@ -1,25 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Arduino Nano (328)" />
-	<File name="DistribuidosProyecto.ino" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
+	<File name="DistribuidosProyecto.ino" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="41626" topLine="456" />
+			<Cursor1 position="49743" topLine="462" />
 		</Cursor>
-		<Folding>
-			<Collapse line="20" />
-			<Collapse line="86" />
-			<Collapse line="152" />
-			<Collapse line="218" />
-			<Collapse line="221" />
-			<Collapse line="224" />
-			<Collapse line="227" />
-			<Collapse line="230" />
-			<Collapse line="236" />
-			<Collapse line="239" />
-			<Collapse line="242" />
-			<Collapse line="245" />
-			<Collapse line="248" />
-			<Collapse line="261" />
-		</Folding>
 	</File>
 </CodeBlocks_layout_file>

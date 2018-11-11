@@ -482,8 +482,10 @@ void loop(){
     notherbalas=0;
     nplayers=0;
     myOLED.clrScr();//Limpiar pantalla
-    moverplayer();//Mover jugador
-    disparar();//Avanzar disparos
+    if(nvidas<100){
+        moverplayer();//Mover jugador
+        disparar();//Avanzar disparos
+    }
     if(conectado2){
         conectado=true;
         recibeSprites(players,nplayers,OUT2,IN2,10);
@@ -497,8 +499,9 @@ void loop(){
 //    barraDeEstado();
 //    myOLED.update();
 //    delay(250);
-    packplayer();
-    packbalas();
+    if(inmunidad%2==0&&nvidas<100)
+        packplayer();
+        packbalas();
     if(conectado1){
         conectado=true;
         sendSprites(players,nplayers,OUT1,IN1,10);
@@ -522,23 +525,22 @@ void loop(){
         sendSprites(otherbalas,notherbalas,OUT2,IN2,10);
         sendSprites(enemigos,nEnemigos,OUT2,IN2,10);
     }
-    draw();
+        if(nvidas>200){
+        myOLED.clrScr();
+        myOLED.print("GAME OVER",43,28);
+        myOLED.update();
+        if(inmunidad>0){
+            inmunidad--;
+        }else if(!digitalRead(BOTON)){
+            nvidas=3;
+        }
+    }else{
+        draw();//Actualizar elementos de la pantalla
+        //myOLED.drawBitmap(0,0,(uint8_t*)sissolar,128,64);
+        //myOLED.update();
+    }
     myOLED.update();
-//    if(nvidas>200){
-////        myOLED.clrScr();
-////        myOLED.print("GAME OVER",43,28);
-////        myOLED.update();
-////        if(inmunidad>0){
-////            inmunidad--;
-////        }else if(!digitalRead(BOTON)){
-////            nvidas=3;
-////        }
-//        nvidas=3;
-//    }else{
-//        draw();//Actualizar elementos de la pantalla
-//        //myOLED.drawBitmap(0,0,(uint8_t*)sissolar,128,64);
-//        //myOLED.update();
-//    }
+
 
 }
 
